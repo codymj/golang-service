@@ -1,0 +1,13 @@
+app:
+  namespace: io.codymj
+  name: service
+  version: 0.0.1
+
+server:
+  host: 127.0.0.1
+  port: 8080
+  timeout:
+    read: 5s
+    write: 10s
+    idle: 15s
+    server: 30s
