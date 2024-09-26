@@ -49,7 +49,10 @@ func (a *application) start() {
 		a.logger.Info(fmt.Sprintf("stopping application: %s", s.String()))
 
 		// Context for graceful shutdown.
-		ctx, cancel := context.WithTimeout(context.Background(), a.cfg.Server.Timeout.Server)
+		ctx, cancel := context.WithTimeout(
+			context.Background(),
+			a.cfg.Server.Timeout.Server,
+		)
 		defer cancel()
 
 		// Shutdown server.
@@ -72,7 +75,10 @@ func (a *application) start() {
 	}
 	defer func() {
 		if err := db.Close(); err != nil {
-			a.logger.Error(fmt.Sprintf("error closing database connection: %v", err))
+			a.logger.Error(fmt.Sprintf(
+				"error closing database connection: %v",
+				err),
+			)
 		}
 		a.logger.Info("database connections closed")
 	}()

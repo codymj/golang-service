@@ -20,23 +20,23 @@ func New(cfg *config.Config) (*sql.DB, error) {
 	// Parse environment variables.
 	host, found := os.LookupEnv("MARIADB_HOST")
 	if !found {
-		return nil, errors.New("MARIADB_HOST environment variable is not set")
+		return nil, errors.New("MARIADB_HOST env variable is not set")
 	}
 	port, found := os.LookupEnv("MARIADB_PORT")
 	if !found {
-		return nil, errors.New("MARIADB_PORT environment variable is not set")
+		return nil, errors.New("MARIADB_PORT env variable is not set")
 	}
 	user, found := os.LookupEnv("MARIADB_USER")
 	if !found {
-		return nil, errors.New("MARIADB_USER environment variable is not set")
+		return nil, errors.New("MARIADB_USER env variable is not set")
 	}
 	password, found := os.LookupEnv("MARIADB_PASSWORD")
 	if !found {
-		return nil, errors.New("MARIADB_PASSWORD environment variable is not set")
+		return nil, errors.New("MARIADB_PASSWORD env variable is not set")
 	}
 	database, found := os.LookupEnv("MARIADB_DATABASE")
 	if !found {
-		return nil, errors.New("MARIADB_DATABASE environment variable is not set")
+		return nil, errors.New("MARIADB_DATABASE env variable is not set")
 	}
 
 	// Build DSN.

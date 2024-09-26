@@ -59,6 +59,7 @@ func New(env string) (*Config, error) {
 
 // getConfigPath validates the path to the YAML configuration file and returns it.
 func getConfigPath(env string) (string, error) {
+	// Set expected path based on environment.
 	var path string
 	switch env {
 	case "dev":
@@ -71,11 +72,11 @@ func getConfigPath(env string) (string, error) {
 		return "", fmt.Errorf("error: '%s' is not a valid environment", env)
 	}
 
+	// Verify the path to the file exists.
 	stat, err := os.Stat(path)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("invalid configuration path: %v", err)
 	}
-
 	if stat.IsDir() {
 		return "", fmt.Errorf("'%s' is a directory, not a file", path)
 	}
