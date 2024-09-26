@@ -16,3 +16,6 @@ database:
   max_open_conns: 10
   max_idle_conns: 10
   max_idle_time: 15m
+
+log:
+  level: info

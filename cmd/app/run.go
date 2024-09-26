@@ -3,7 +3,6 @@ package app
 import (
 	"flag"
 	"log/slog"
-	"os"
 
 	"golang-service.codymj.io/config"
 )
@@ -24,8 +23,7 @@ func Run() {
 
 	// Start application.
 	app := application{
-		cfg:    cfg,
-		logger: slog.New(slog.NewTextHandler(os.Stdout, nil)),
+		cfg: cfg,
 	}
 	app.start()
 }

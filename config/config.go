@@ -5,6 +5,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v3"
 )
 
@@ -30,6 +32,9 @@ type Config struct {
 		MaxIdleConns int           `yaml:"max_idle_conns"`
 		MaxIdleTime  time.Duration `yaml:"max_idle_time"`
 	} `yaml:"database"`
+	Log struct {
+		Level string `yaml:"level"`
+	} `yaml:"log"`
 }
 
 // New returns the application configuration parameters based on environment.
@@ -54,10 +59,13 @@ func New(env string) (*Config, error) {
 		return nil, err
 	}
 
+	// Initialize logger.
+	initLogger(cfg)
+
 	return cfg, nil
 }
 
-// getConfigPath validates the path to the YAML configuration file and returns it.
+// getConfigPath validates path to the YAML configuration file and returns it.
 func getConfigPath(env string) (string, error) {
 	// Set expected path based on environment.
 	var path string
@@ -82,4 +90,31 @@ func getConfigPath(env string) (string, error) {
 	}
 
 	return path, nil
+}
+
+// initLogger initializes logger.
+func initLogger(cfg *Config) {
+	switch cfg.Log.Level {
+	case "trace":
+		zerolog.SetGlobalLevel(zerolog.TraceLevel)
+	case "debug":
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	case "info":
+		zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	case "warn":
+		zerolog.SetGlobalLevel(zerolog.WarnLevel)
+	case "error":
+		zerolog.SetGlobalLevel(zerolog.ErrorLevel)
+	case "fatal":
+		zerolog.SetGlobalLevel(zerolog.FatalLevel)
+	case "panic":
+		zerolog.SetGlobalLevel(zerolog.PanicLevel)
+	default:
+		log.Warn().Msg("invalid log level in config, defaulting to info")
+		zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	}
+	zerolog.TimeFieldFormat = time.RFC3339
+	zerolog.TimestampFunc = func() time.Time {
+		return time.Now().UTC()
+	}
 }
