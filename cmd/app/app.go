@@ -74,6 +74,7 @@ func (a *application) start() {
 		if err := db.Close(); err != nil {
 			a.logger.Error(fmt.Sprintf("error closing database connection: %v", err))
 		}
+		a.logger.Info("database connections closed")
 	}()
 	a.logger.Info("database connection successful")
 
@@ -91,5 +92,4 @@ func (a *application) start() {
 		a.logger.Error(fmt.Sprintf("error shutting down server: %v", err))
 		return
 	}
-	a.logger.Info("shutdown complete")
 }
