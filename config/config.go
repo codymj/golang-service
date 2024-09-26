@@ -25,10 +25,15 @@ type Config struct {
 			Server time.Duration `yaml:"server"`
 		} `yaml:"timeout"`
 	} `yaml:"server"`
+	Database struct {
+		MaxOpenConns int           `yaml:"max_open_conns"`
+		MaxIdleConns int           `yaml:"max_idle_conns"`
+		MaxIdleTime  time.Duration `yaml:"max_idle_time"`
+	} `yaml:"database"`
 }
 
-// NewConfig returns the application configuration parameters.
-func NewConfig(configPath string) (*Config, error) {
+// New returns the application configuration parameters.
+func New(configPath string) (*Config, error) {
 	// Open configuration file.
 	file, err := os.Open(configPath)
 	if err != nil {

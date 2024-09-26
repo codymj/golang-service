@@ -12,6 +12,7 @@ import (
 	"syscall"
 
 	"golang-service.codymj.io/config"
+	"golang-service.codymj.io/db"
 )
 
 // Application is a struct to maintain application dependencies.
@@ -35,6 +36,7 @@ func (a *application) serve() {
 	// Server shutdown error channel.
 	shutdownErrorChan := make(chan error)
 
+	// Listen for interrupts in a separate goroutine.
 	go func() {
 		// Channel to listen for interrupt signals.
 		signalChan := make(chan os.Signal, 1)
@@ -60,9 +62,22 @@ func (a *application) serve() {
 		shutdownErrorChan <- nil
 	}()
 
+	// Connect to database.
+	db, err := db.New(a.cfg)
+	if err != nil {
+		a.logger.Error(fmt.Sprintf("failed to connect to database: %v", err))
+		return
+	}
+	defer func() {
+		if err := db.Close(); err != nil {
+			a.logger.Error(fmt.Sprintf("error closing database connection: %v", err))
+		}
+	}()
+	a.logger.Info("database connection successful")
+
 	// Startup.
 	a.logger.Info(fmt.Sprintf("server starting on %s", server.Addr))
-	err := server.ListenAndServe()
+	err = server.ListenAndServe()
 	if !errors.Is(err, http.ErrServerClosed) {
 		a.logger.Error(fmt.Sprintf("error starting server: %v", err))
 		return

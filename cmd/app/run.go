@@ -17,12 +17,14 @@ func Run() {
 	// Validate configuration file path.
 	if err := config.ValidateConfigPath(cfgPath); err != nil {
 		slog.Error(err.Error())
+		return
 	}
 
 	// Parse configuration from file path.
-	cfg, err := config.NewConfig(cfgPath)
+	cfg, err := config.New(cfgPath)
 	if err != nil {
 		slog.Error(err.Error())
+		return
 	}
 
 	// Start application.

@@ -11,3 +11,8 @@ server:
     write: 10s
     idle: 15s
     server: 30s
+
+database:
+  max_open_conns: 10
+  max_idle_conns: 10
+  max_idle_time: 15m
