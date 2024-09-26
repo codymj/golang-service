@@ -19,7 +19,7 @@ import (
 type application struct {
 	cfg    *config.Config
 	logger *slog.Logger
-	wg     *sync.WaitGroup
+	wg     sync.WaitGroup
 }
 
 // Start starts the application.
@@ -41,16 +41,16 @@ func (a *application) start() {
 		// Channel to listen for interrupt signals.
 		signalChan := make(chan os.Signal, 1)
 
+		// Handle interrupts.
+		signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
+
 		// Read signal from channel.
 		s := <-signalChan
-		a.logger.Info(fmt.Sprintf("caught signal: %s", s.String()))
+		a.logger.Info(fmt.Sprintf("stopping application: %s", s.String()))
 
 		// Context for graceful shutdown.
 		ctx, cancel := context.WithTimeout(context.Background(), a.cfg.Server.Timeout.Server)
 		defer cancel()
-
-		// Handle interrupts.
-		signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
 
 		// Shutdown server.
 		err := server.Shutdown(ctx)
@@ -59,7 +59,7 @@ func (a *application) start() {
 		}
 
 		// Wait for cleanup tasks to finish.
-		a.logger.Info("completing background tasks")
+		a.logger.Info("completing background tasks...")
 		a.wg.Wait()
 		shutdownErrorChan <- nil
 	}()
@@ -85,11 +85,11 @@ func (a *application) start() {
 		return
 	}
 
+	// Check for shutdown errors.
 	err = <-shutdownErrorChan
 	if err != nil {
 		a.logger.Error(fmt.Sprintf("error shutting down server: %v", err))
 		return
 	}
-
-	a.logger.Info(fmt.Sprintf("stopped server: %s", server.Addr))
+	a.logger.Info("shutdown complete")
 }
