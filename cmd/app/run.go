@@ -8,20 +8,15 @@ import (
 	"golang-service.codymj.io/config"
 )
 
+// Run gathers configuration data then runs the application.
 func Run() {
 	// Parse commandline flags.
-	var cfgPath string
-	flag.StringVar(&cfgPath, "cfg", "./config/config.yml", "path to config.yml file")
+	var env string
+	flag.StringVar(&env, "env", "dev", "environment: dev|stg|prd")
 	flag.Parse()
 
-	// Validate configuration file path.
-	if err := config.ValidateConfigPath(cfgPath); err != nil {
-		slog.Error(err.Error())
-		return
-	}
-
-	// Parse configuration from file path.
-	cfg, err := config.New(cfgPath)
+	// Parse environment-based configuration file.
+	cfg, err := config.New(env)
 	if err != nil {
 		slog.Error(err.Error())
 		return
@@ -32,5 +27,5 @@ func Run() {
 		cfg:    cfg,
 		logger: slog.New(slog.NewTextHandler(os.Stdout, nil)),
 	}
-	app.serve()
+	app.start()
 }

@@ -22,8 +22,8 @@ type application struct {
 	wg     *sync.WaitGroup
 }
 
-// Run starts the HTTP server.
-func (a *application) serve() {
+// Start starts the application.
+func (a *application) start() {
 	// Server options.
 	server := &http.Server{
 		Addr:         a.cfg.Server.Host + ":" + a.cfg.Server.Port,
@@ -41,6 +41,7 @@ func (a *application) serve() {
 		// Channel to listen for interrupt signals.
 		signalChan := make(chan os.Signal, 1)
 
+		// Read signal from channel.
 		s := <-signalChan
 		a.logger.Info(fmt.Sprintf("caught signal: %s", s.String()))
 
@@ -57,6 +58,7 @@ func (a *application) serve() {
 			shutdownErrorChan <- err
 		}
 
+		// Wait for cleanup tasks to finish.
 		a.logger.Info("completing background tasks")
 		a.wg.Wait()
 		shutdownErrorChan <- nil

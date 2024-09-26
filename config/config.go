@@ -32,10 +32,16 @@ type Config struct {
 	} `yaml:"database"`
 }
 
-// New returns the application configuration parameters.
-func New(configPath string) (*Config, error) {
+// New returns the application configuration parameters based on environment.
+func New(env string) (*Config, error) {
+	// Validate and get configuration file path.
+	path, err := getConfigPath(env)
+	if err != nil {
+		return nil, err
+	}
+
 	// Open configuration file.
-	file, err := os.Open(configPath)
+	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
@@ -51,16 +57,28 @@ func New(configPath string) (*Config, error) {
 	return cfg, nil
 }
 
-// ValidateConfigPath validates the path to the YAML configuration file.
-func ValidateConfigPath(path string) error {
+// getConfigPath validates the path to the YAML configuration file and returns it.
+func getConfigPath(env string) (string, error) {
+	var path string
+	switch env {
+	case "dev":
+		path = "./config/config-dev.yml"
+	case "stg":
+		path = "./config/config-stg.yml"
+	case "prd":
+		path = "./config/config-prd.yml"
+	default:
+		return "", fmt.Errorf("error: '%s' is not a valid environment", env)
+	}
+
 	stat, err := os.Stat(path)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	if stat.IsDir() {
-		return fmt.Errorf("'%s' is a directory, not a file", path)
+		return "", fmt.Errorf("'%s' is a directory, not a file", path)
 	}
 
-	return nil
+	return path, nil
 }
