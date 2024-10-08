@@ -7,31 +7,33 @@ import (
 	"golang-service.codymj.io/internal/service"
 )
 
-// ListUsersHandler is the HTTP handler to list all users.
-type ListUsersHandler struct {
-	service *service.UserService
+// UsersListHandler is the HTTP handler to list all users.
+type UsersListHandler struct {
+	userSvc *service.UserService
 }
 
-// NewListUsersHandler returns a new ListUsersHandler.
-func NewListUsersHandler(service *service.UserService) *ListUsersHandler {
-	return &ListUsersHandler{
-		service: service,
+// NewUsersListHandler returns a new UsersListHandler.
+func NewUsersListHandler(userSvc *service.UserService) *UsersListHandler {
+	return &UsersListHandler{
+		userSvc: userSvc,
 	}
 }
 
 // Handle handles the HTTP request.
-func (h *ListUsersHandler) Handle(w http.ResponseWriter, r *http.Request) {
-	// Get query string and populate query parameters, if any.
-	qs := r.URL.Query()
+func (h *UsersListHandler) Handle(w http.ResponseWriter, r *http.Request) {
+	// Get query parameter map and populate query parameters, if any.
+	queryMap := r.URL.Query()
 
-	username := qs.Get("username")
-	email := qs.Get("email")
+	username := queryMap.Get("username")
+	email := queryMap.Get("email")
 
-	users, err := h.service.List(r.Context(), username, email)
+	// Call service.
+	users, err := h.userSvc.List(r.Context(), username, email)
 	if err != nil {
 		// handle
 	}
 
+	// Return response.
 	headers := make(http.Header)
 	err = handler.WriteJson(w, http.StatusOK, users, headers)
 	if err != nil {

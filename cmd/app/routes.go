@@ -11,15 +11,18 @@ import (
 )
 
 func (a *application) routes(db *sql.DB) http.Handler {
-	// Intialize router.
+	// Initialize router.
 	router := httprouter.New()
 
-	// Setup /v1/users routes.
+	// Initialize repositories.
 	userRepo := repo.NewUserRepo(db)
+
+	// Initialize services.
 	userService := service.NewUserService(a.cfg, userRepo)
 
-	listUsersHandler := users.NewListUsersHandler(userService)
-	router.HandlerFunc(http.MethodGet, "/v1/users", listUsersHandler.Handle)
+	// Initialize routes.
+	usersListHandler := users.NewUsersListHandler(userService)
+	router.HandlerFunc(http.MethodGet, "/v1/users", usersListHandler.Handle)
 
 	return router
 }
