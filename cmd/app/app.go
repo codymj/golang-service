@@ -23,10 +23,24 @@ type application struct {
 
 // Start starts the application.
 func (a *application) start() {
+	// Connect to database.
+	db, err := db.New(a.cfg)
+	if err != nil {
+		log.Error().Msgf("failed to connect to database: %v", err)
+		return
+	}
+	defer func() {
+		if err := db.Close(); err != nil {
+			log.Error().Msgf("error closing database connection: %v", err)
+		}
+		log.Info().Msg("database connections closed")
+	}()
+	log.Info().Msg("database connection successful")
+
 	// Server options.
 	server := &http.Server{
 		Addr:         a.cfg.Server.Host + ":" + a.cfg.Server.Port,
-		Handler:      nil,
+		Handler:      a.routes(db),
 		ReadTimeout:  a.cfg.Server.Timeout.Read,
 		WriteTimeout: a.cfg.Server.Timeout.Write,
 		IdleTimeout:  a.cfg.Server.Timeout.Idle,
@@ -65,20 +79,6 @@ func (a *application) start() {
 		a.wg.Wait()
 		shutdownErrorChan <- nil
 	}()
-
-	// Connect to database.
-	db, err := db.New(a.cfg)
-	if err != nil {
-		log.Error().Msgf("failed to connect to database: %v", err)
-		return
-	}
-	defer func() {
-		if err := db.Close(); err != nil {
-			log.Error().Msgf("error closing database connection: %v", err)
-		}
-		log.Info().Msg("database connections closed")
-	}()
-	log.Info().Msg("database connection successful")
 
 	// Startup.
 	log.Info().Msg(fmt.Sprintf("server starting on %s", server.Addr))
