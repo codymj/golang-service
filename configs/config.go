@@ -1,4 +1,4 @@
-package config
+package configs
 
 import (
 	"fmt"
@@ -71,11 +71,11 @@ func getConfigPath(env string) (string, error) {
 	var path string
 	switch env {
 	case "dev":
-		path = "./config/config-dev.yml"
+		path = "./configs/config-dev.yml"
 	case "stg":
-		path = "./config/config-stg.yml"
+		path = "./configs/config-stg.yml"
 	case "prd":
-		path = "./config/config-prd.yml"
+		path = "./configs/config-prd.yml"
 	default:
 		return "", fmt.Errorf("error: '%s' is not a valid environment", env)
 	}

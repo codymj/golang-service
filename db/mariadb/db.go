@@ -1,4 +1,4 @@
-package db
+package mariadb
 
 import (
 	"context"
@@ -10,10 +10,10 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
-	"golang-service.codymj.io/config"
+	"golang-service.codymj.io/configs"
 )
 
-func New(cfg *config.Config) (*sql.DB, error) {
+func New(cfg *configs.Config) (*sql.DB, error) {
 	// Check for .env file. If one isn't found, continue.
 	_ = godotenv.Load(".env")
 

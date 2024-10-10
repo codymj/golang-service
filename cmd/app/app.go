@@ -11,36 +11,36 @@ import (
 	"syscall"
 
 	"github.com/rs/zerolog/log"
-	"golang-service.codymj.io/config"
-	"golang-service.codymj.io/db"
+	"golang-service.codymj.io/configs"
+	"golang-service.codymj.io/db/mariadb"
 )
 
 // Application is a struct to maintain application dependencies.
 type application struct {
-	cfg *config.Config
+	cfg *configs.Config
 	wg  sync.WaitGroup
 }
 
 // Start starts the application.
 func (a *application) start() {
 	// Connect to database.
-	db, err := db.New(a.cfg)
+	mariadb, err := mariadb.New(a.cfg)
 	if err != nil {
 		log.Error().Msgf("failed to connect to database: %v", err)
 		return
 	}
 	defer func() {
-		if err := db.Close(); err != nil {
+		if err := mariadb.Close(); err != nil {
 			log.Error().Msgf("error closing database connection: %v", err)
 		}
-		log.Info().Msg("database connections closed")
+		log.Info().Msg("mariadb connections closed")
 	}()
-	log.Info().Msg("database connection successful")
+	log.Info().Msg("mariadb connection successful")
 
 	// Server options.
 	server := &http.Server{
 		Addr:         a.cfg.Server.Host + ":" + a.cfg.Server.Port,
-		Handler:      a.routes(db),
+		Handler:      a.routes(mariadb),
 		ReadTimeout:  a.cfg.Server.Timeout.Read,
 		WriteTimeout: a.cfg.Server.Timeout.Write,
 		IdleTimeout:  a.cfg.Server.Timeout.Idle,

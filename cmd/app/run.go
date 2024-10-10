@@ -4,7 +4,7 @@ import (
 	"flag"
 	"log/slog"
 
-	"golang-service.codymj.io/config"
+	"golang-service.codymj.io/configs"
 )
 
 // Run gathers configuration data then runs the application.
@@ -15,7 +15,7 @@ func Run() {
 	flag.Parse()
 
 	// Parse environment-based configuration file.
-	cfg, err := config.New(env)
+	cfg, err := configs.New(env)
 	if err != nil {
 		slog.Error(err.Error())
 		return

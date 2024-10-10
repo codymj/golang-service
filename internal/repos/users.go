@@ -1,4 +1,4 @@
-package repo
+package repos
 
 import (
 	"context"
@@ -6,30 +6,30 @@ import (
 	"sync"
 
 	sq "github.com/Masterminds/squirrel"
-	"golang-service.codymj.io/internal/model"
+	"golang-service.codymj.io/internal/models"
 )
 
-// UserRepo is the user repository.
-type UserRepo struct {
+// UsersRepo is the user repository.
+type UsersRepo struct {
 	_  sync.Mutex
 	db *sql.DB
 }
 
-// NewUserRepo returns a user repository.
-func NewUserRepo(db *sql.DB) *UserRepo {
-	return &UserRepo{
+// NewUsersRepo returns a user repository.
+func NewUsersRepo(db *sql.DB) *UsersRepo {
+	return &UsersRepo{
 		db: db,
 	}
 }
 
 // UserRepoFindAllParams are params to filter with the FindAll query.
-type UserRepoFindAllParams struct {
+type UsersRepoFindAllParams struct {
 	Username sql.NullString
 	Email    sql.NullString
 }
 
 // FindAll finds all users by optional parameters.
-func (r *UserRepo) FindAll(ctx context.Context, params UserRepoFindAllParams) ([]model.User, error) {
+func (r *UsersRepo) FindAll(ctx context.Context, params UsersRepoFindAllParams) ([]models.User, error) {
 	qb := sq.Select(
 		"id",
 		"username",
@@ -58,9 +58,9 @@ func (r *UserRepo) FindAll(ctx context.Context, params UserRepoFindAllParams) ([
 		return nil, err
 	}
 
-	var users []model.User
+	var users []models.User
 	for rows.Next() {
-		var user model.User
+		var user models.User
 		err = rows.Scan(
 			&user.ID,
 			&user.Username,

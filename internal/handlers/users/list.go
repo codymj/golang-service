@@ -3,17 +3,17 @@ package users
 import (
 	"net/http"
 
-	"golang-service.codymj.io/internal/handler"
-	"golang-service.codymj.io/internal/service"
+	"golang-service.codymj.io/internal/handlers"
+	"golang-service.codymj.io/internal/services"
 )
 
 // UsersListHandler is the HTTP handler to list all users.
 type UsersListHandler struct {
-	userSvc *service.UserService
+	userSvc *services.UsersService
 }
 
 // NewUsersListHandler returns a new UsersListHandler.
-func NewUsersListHandler(userSvc *service.UserService) *UsersListHandler {
+func NewUsersListHandler(userSvc *services.UsersService) *UsersListHandler {
 	return &UsersListHandler{
 		userSvc: userSvc,
 	}
@@ -35,7 +35,7 @@ func (h *UsersListHandler) Handle(w http.ResponseWriter, r *http.Request) {
 
 	// Return response.
 	headers := make(http.Header)
-	err = handler.WriteJson(w, http.StatusOK, users, headers)
+	err = handlers.WriteJson(w, http.StatusOK, users, headers)
 	if err != nil {
 		// handle
 	}

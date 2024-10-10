@@ -5,23 +5,23 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
-	"golang-service.codymj.io/internal/handler/users"
-	"golang-service.codymj.io/internal/repo"
-	"golang-service.codymj.io/internal/service"
+	"golang-service.codymj.io/internal/handlers/users"
+	"golang-service.codymj.io/internal/repos"
+	"golang-service.codymj.io/internal/services"
 )
 
-func (a *application) routes(db *sql.DB) http.Handler {
+func (a *application) routes(mariadb *sql.DB) http.Handler {
 	// Initialize router.
 	router := httprouter.New()
 
 	// Initialize repositories.
-	userRepo := repo.NewUserRepo(db)
+	usersRepo := repos.NewUsersRepo(mariadb)
 
 	// Initialize services.
-	userService := service.NewUserService(a.cfg, userRepo)
+	usersService := services.NewUsersService(a.cfg, usersRepo)
 
 	// Initialize routes.
-	usersListHandler := users.NewUsersListHandler(userService)
+	usersListHandler := users.NewUsersListHandler(usersService)
 	router.HandlerFunc(http.MethodGet, "/v1/users", usersListHandler.Handle)
 
 	return router
