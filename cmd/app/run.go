@@ -7,7 +7,7 @@ import (
 	"golang-service.codymj.io/configs"
 )
 
-// Run gathers configuration data then runs the application.
+// Gathers configuration data then runs the application.
 func Run() {
 	// Parse commandline flags.
 	var env string

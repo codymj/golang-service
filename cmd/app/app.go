@@ -15,13 +15,13 @@ import (
 	"golang-service.codymj.io/db/mariadb"
 )
 
-// Application is a struct to maintain application dependencies.
+// Maintains application dependencies.
 type application struct {
 	cfg *configs.Config
 	wg  sync.WaitGroup
 }
 
-// Start starts the application.
+// Starts the application.
 func (a *application) start() {
 	// Connect to database.
 	mariadb, err := mariadb.New(a.cfg)

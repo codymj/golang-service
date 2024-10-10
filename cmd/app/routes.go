@@ -10,6 +10,7 @@ import (
 	"golang-service.codymj.io/internal/services"
 )
 
+// Creates and initializes the router.
 func (a *application) routes(mariadb *sql.DB) http.Handler {
 	// Initialize router.
 	router := httprouter.New()
@@ -18,7 +19,7 @@ func (a *application) routes(mariadb *sql.DB) http.Handler {
 	usersRepo := repos.NewUsersRepo(mariadb)
 
 	// Initialize services.
-	usersService := services.NewUsersService(a.cfg, usersRepo)
+	usersService := services.NewUsersService(usersRepo)
 
 	// Initialize routes.
 	usersListHandler := users.NewUsersListHandler(usersService)

@@ -13,6 +13,7 @@ import (
 	"golang-service.codymj.io/configs"
 )
 
+// Returns a connection pool for the mariadb database.
 func New(cfg *configs.Config) (*sql.DB, error) {
 	// Check for .env file. If one isn't found, continue.
 	_ = godotenv.Load(".env")

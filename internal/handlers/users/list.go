@@ -7,19 +7,19 @@ import (
 	"golang-service.codymj.io/internal/services"
 )
 
-// UsersListHandler is the HTTP handler to list all users.
+// The HTTP handler to list all users.
 type UsersListHandler struct {
 	userSvc *services.UsersService
 }
 
-// NewUsersListHandler returns a new UsersListHandler.
+// Returns a UsersListHandler.
 func NewUsersListHandler(userSvc *services.UsersService) *UsersListHandler {
 	return &UsersListHandler{
 		userSvc: userSvc,
 	}
 }
 
-// Handle handles the HTTP request.
+// Handles the HTTP request.
 func (h *UsersListHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	// Get query parameter map and populate query parameters, if any.
 	queryMap := r.URL.Query()

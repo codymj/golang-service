@@ -10,7 +10,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// Config contains configuration parameters for this application.
+// Contains configuration parameters for this application.
 type Config struct {
 	App struct {
 		Namespace string `yaml:"namespace"`
@@ -37,7 +37,7 @@ type Config struct {
 	} `yaml:"log"`
 }
 
-// New returns the application configuration parameters based on environment.
+// Returns the application configuration parameters based on environment.
 func New(env string) (*Config, error) {
 	// Validate and get configuration file path.
 	path, err := getConfigPath(env)
@@ -65,7 +65,7 @@ func New(env string) (*Config, error) {
 	return cfg, nil
 }
 
-// getConfigPath validates path to the YAML configuration file and returns it.
+// Validates path to the YAML configuration file and returns it.
 func getConfigPath(env string) (string, error) {
 	// Set expected path based on environment.
 	var path string
@@ -92,7 +92,7 @@ func getConfigPath(env string) (string, error) {
 	return path, nil
 }
 
-// initLogger initializes logger.
+// Initializes logger.
 func initLogger(cfg *Config) {
 	switch cfg.Log.Level {
 	case "trace":

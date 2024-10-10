@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-// WriteJson writes JSON response back to client.
+// Writes JSON response back to client.
 func WriteJson(w http.ResponseWriter, status int, data any, headers http.Header) error {
 	// encode data
 	js, err := json.Marshal(data)

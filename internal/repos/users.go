@@ -9,26 +9,26 @@ import (
 	"golang-service.codymj.io/internal/models"
 )
 
-// UsersRepo is the user repository.
+// Repository to manage users.
 type UsersRepo struct {
 	_  sync.Mutex
 	db *sql.DB
 }
 
-// NewUsersRepo returns a user repository.
+// Returns a user repository.
 func NewUsersRepo(db *sql.DB) *UsersRepo {
 	return &UsersRepo{
 		db: db,
 	}
 }
 
-// UserRepoFindAllParams are params to filter with the FindAll query.
+// Parameters to filter users with the FindAll query.
 type UsersRepoFindAllParams struct {
 	Username sql.NullString
 	Email    sql.NullString
 }
 
-// FindAll finds all users by optional parameters.
+// Finds all users using optional parameters.
 func (r *UsersRepo) FindAll(ctx context.Context, params UsersRepoFindAllParams) ([]models.User, error) {
 	qb := sq.Select(
 		"id",
