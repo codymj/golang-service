@@ -9,13 +9,13 @@ import (
 
 // The HTTP handler to list all users.
 type UsersListHandler struct {
-	userSvc *services.UsersService
+	usersService *services.UsersService
 }
 
 // Returns a UsersListHandler.
-func NewUsersListHandler(userSvc *services.UsersService) *UsersListHandler {
+func NewUsersListHandler(usersService *services.UsersService) *UsersListHandler {
 	return &UsersListHandler{
-		userSvc: userSvc,
+		usersService: usersService,
 	}
 }
 
@@ -28,7 +28,7 @@ func (h *UsersListHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	email := queryMap.Get("email")
 
 	// Call service.
-	users, err := h.userSvc.List(r.Context(), username, email)
+	users, err := h.usersService.List(r.Context(), username, email)
 	if err != nil {
 		// handle
 	}
