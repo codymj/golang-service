@@ -1,9 +1,8 @@
-package users
+package handlers
 
 import (
 	"net/http"
 
-	"golang-service.codymj.io/internal/handlers"
 	"golang-service.codymj.io/internal/services"
 )
 
@@ -30,13 +29,24 @@ func (h *UsersListHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	// Call service.
 	users, err := h.usersService.List(r.Context(), username, email)
 	if err != nil {
-		// handle
+		serverErrorResp(w, r, err)
+		return
 	}
 
 	// Return response.
 	headers := make(http.Header)
-	err = handlers.WriteJson(w, http.StatusOK, users, headers)
-	if err != nil {
-		// handle
+
+	if len(users) == 0 {
+		err = writeJson(w, http.StatusNoContent, nil, headers)
+		if err != nil {
+			serverErrorResp(w, r, err)
+			return
+		}
+	} else {
+		err = writeJson(w, http.StatusOK, users, headers)
+		if err != nil {
+			serverErrorResp(w, r, err)
+			return
+		}
 	}
 }
