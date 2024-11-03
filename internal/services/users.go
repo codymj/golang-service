@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 
-	"golang-service.codymj.io/internal/models"
 	"golang-service.codymj.io/internal/repos"
+	"golang-service.codymj.io/internal/transport"
 )
 
 // Service to manage users.
@@ -21,9 +21,21 @@ func NewUsersService(repo *repos.UsersRepo) *UsersService {
 }
 
 // Returns a list of all users, filterable by optional parameters.
-func (s *UsersService) List(ctx context.Context, username, email string) ([]models.User, error) {
-	return s.repo.FindAll(ctx, repos.UsersRepoFindAllParams{
+func (s *UsersService) List(ctx context.Context, username, email string) ([]transport.UserDTO, error) {
+	// Retrieve users from database.
+	users, err := s.repo.FindAll(ctx, repos.UsersRepoFindAllParams{
 		Username: sql.NullString{String: username, Valid: username != ""},
 		Email:    sql.NullString{String: email, Valid: email != ""},
 	})
+	if err != nil {
+		return nil, err
+	}
+
+	// Transform user models to DTOs.
+	response := make([]transport.UserDTO, 0)
+	for _, user := range users {
+		response = append(response, transport.ToUserDTO(user))
+	}
+
+	return response, nil
 }
