@@ -22,8 +22,16 @@ func (a *application) routes(mariadb *sql.DB) http.Handler {
 	usersService := services.NewUsersService(usersRepo)
 
 	// Initialize routes.
-	usersListHandler := handlers.NewUsersListHandler(usersService)
-	router.HandlerFunc(http.MethodGet, "/v1/users", usersListHandler.Handle)
+	healthProps := handlers.HealthProperties{
+		Namespace: a.cfg.App.Namespace,
+		Name:      a.cfg.App.Name,
+		Version:   a.cfg.App.Version,
+	}
+	healthGetHandler := handlers.NewHealthGetHandler(healthProps)
+	router.HandlerFunc(http.MethodGet, "/v1/health", healthGetHandler.Handle)
+
+	usersGetHandler := handlers.NewUsersGetHandler(usersService)
+	router.HandlerFunc(http.MethodGet, "/v1/users", usersGetHandler.Handle)
 
 	return router
 }
