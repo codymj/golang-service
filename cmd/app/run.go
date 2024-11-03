@@ -2,8 +2,8 @@ package app
 
 import (
 	"flag"
-	"log/slog"
 
+	"github.com/rs/zerolog/log"
 	"golang-service.codymj.io/configs"
 )
 
@@ -17,11 +17,12 @@ func Run() {
 	// Parse environment-based configuration file.
 	cfg, err := configs.New(env)
 	if err != nil {
-		slog.Error(err.Error())
+		log.Error().Msg(err.Error())
 		return
 	}
 
 	// Start application.
+	log.Info().Msgf("application environment: %s", env)
 	app := application{
 		cfg: cfg,
 	}
