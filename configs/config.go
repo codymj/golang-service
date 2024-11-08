@@ -113,7 +113,7 @@ func initLogger(cfg *Config) {
 		log.Warn().Msg("invalid log level in config, defaulting to info")
 		zerolog.SetGlobalLevel(zerolog.InfoLevel)
 	}
-	zerolog.TimeFieldFormat = time.RFC3339
+	zerolog.TimeFieldFormat = time.RFC3339Nano
 	zerolog.TimestampFunc = func() time.Time {
 		return time.Now().UTC()
 	}
