@@ -53,7 +53,7 @@ func (a *application) routes(mariadb *sql.DB) http.Handler {
 	return router
 }
 
-// Creates middleware chain around a handler.
+// Creates middleware chain around a handler function.
 // The first middleware in the chain will be executed last. For example, the
 // order of execution of the middlewares wrapped by makeChain(h, mw1, mw2, mw3)
 // will be mw3, mw2, mw1.
