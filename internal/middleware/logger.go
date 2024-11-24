@@ -4,31 +4,25 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 )
 
 // Middleware for logging request information.
 func Logger(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Log request info.
-		start := time.Now()
-		log.Info().
-			Str("traceID", r.Header.Get("X-Trace-ID")).
-			Str("host", r.Host).
-			Str("method", r.Method).
-			Str("path", r.URL.Path).
-			Msg("init")
+		// Grab logger for this request.
+		logger := zerolog.Ctx(r.Context())
 
-		// Call next handler in the chain.
+		// Note current time to measure request duration.
+		start := time.Now()
+		logger.Info().Msg("init")
+
+		// Do work.
 		next.ServeHTTP(w, r)
 
-		// Log request info.
-		log.Info().
-			Str("traceID", r.Header.Get("X-Trace-ID")).
-			Str("host", r.Host).
-			Str("method", r.Method).
-			Str("path", r.URL.Path).
-			Dur("duration", time.Duration(time.Since(start).Nanoseconds())).
+		// Log duration.
+		logger.Info().
+			Dur("duration", time.Duration(time.Since(start).Microseconds())).
 			Msg("done")
 	})
 }
